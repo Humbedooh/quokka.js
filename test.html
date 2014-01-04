@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf8"/>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="quokka.js"></script>
+  </head>
+  <body>
+<div style="width: 410px; height: 250px; float: left;">
+<canvas id="myCanvas" height="240" width="400"/>
+</div>  
+
+<div style="width: 410px; height: 250px; float: left;">
+<canvas id="myCanvas2" height="240" width="600"/>
+</div>
+
+<script>
+
+quokkaCircle("myCanvas", [
+            {value: 700, title: "Yes"},
+            {value: 200, title: "No"},
+            {value: 500, title: "Maybe"},
+        ]
+    );
+
+quokkaLines("myCanvas2",
+              ['Carrots', 'Apples', 'Oranges', 'Wheat', 'Coffee', 'Tea'],
+              [
+                [10,10,10,10,7,5],
+                [12,10,10,10,7,5],
+                [8,12,20,5,10,5],
+                [10,10,10,10,7,14],
+                [12,10,10,10,7,5],
+                [8,12,20,5,10,5],
+                [10,10,10,10,7,5],
+                [12,10,10,10,7,5]
+               ],
+              {stack: true, curve: true, title: "Yearly consumption of food"});
+
+</script>
+</body>
+</html>
