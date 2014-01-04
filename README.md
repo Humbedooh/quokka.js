@@ -14,7 +14,13 @@ Where `canvasName` is the name of the HTML5 canvas to draw on, and `value` is a 
 
 For example:
 
-    quokkaCircle("myCanvasID", [ {title: 'good eggs', value: 40}, {title: 'bad eggs', value: 60} ] );
+    quokkaCircle(
+        "myCanvasID", 
+        [ 
+            {title: 'good eggs', value: 40},
+            {title: 'bad eggs', value: 60}
+         ]
+      );
     
 Line charts:
 ############
