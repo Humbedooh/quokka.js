@@ -6,12 +6,16 @@
     <script type="text/javascript" src="quokka.js"></script>
   </head>
   <body>
-<div style="width: 410px; height: 250px; float: left;">
+<div style="width: 410px; height: 250px; float: left; clear: both;">
 <canvas id="myCanvas" height="240" width="400"/>
 </div>  
 
-<div style="width: 410px; height: 250px; float: left;">
+<div style="width: 610px; height: 250px; float: left; clear: both;">
 <canvas id="myCanvas2" height="240" width="600"/>
+</div>
+
+<div style="width: 410px; height: 250px; float: left; clear: both;">
+<canvas id="myCanvas3" height="240" width="600"/>
 </div>
 
 <script>
@@ -36,6 +40,17 @@ quokkaLines("myCanvas2",
                 [2013, 12,10,10,10,7,5]
                ],
               {stack: true, curve: true, title: "Yearly consumption of food (in tonnes)", nox: false});
+
+quokkaBars("myCanvas3",
+              ['Carrots', 'Apples', 'Oranges', 'Wheat', 'Coffee', 'Tea'],
+              [
+                [2009, 10,10,10,10,7,14],
+                [2010, 12,10,10,10,7,5],
+                [2011, 8,12,20,5,10,5],
+                [2012, 10,10,10,10,7,5],
+                [2013, 12,10,10,10,7,5]
+               ],
+              {stack: false, title: "Yearly consumption of food (in tonnes)", nox: false});
 
 </script>
 </body>

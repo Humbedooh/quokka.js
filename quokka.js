@@ -169,7 +169,11 @@ function quokkaLines(id, titles, values, options) {
     ctx.textAlign = "left";
     var posY = 50;
     for (var k in titles) {
-        var title = titles[k] + " (" + values[values.length-1][k] + ")";
+        var x = parseInt(k)
+        if (!noX) {
+            x = x + 1;
+        }
+        var title = titles[k] + " (" + values[values.length-1][x] + ")";
         ctx.fillStyle = colors[k % colors.length][0];
         ctx.fillRect(canvas.width - lwidth + 20, posY-10, 10, 10);
         
@@ -377,6 +381,196 @@ function quokkaLines(id, titles, values, options) {
             ctx.fillStyle = colors[k % colors.length][0];
             ctx.fill();
         }
+
+    }
+}
+
+
+
+/* Function for drawing line charts
+ * Example usage:
+ * quokkaLines("myCanvas", ['Line a', 'Line b', 'Line c'], [ [x1,a1,b1,c1], [x2,a2,b2,c2], [x3,a3,b3,c3] ], { stacked: true, curve: false, title: "Some title" } );
+ */
+function quokkaBars(id, titles, values, options) {
+    var canvas = document.getElementById(id);
+    var ctx=canvas.getContext("2d");
+    var lwidth = 150;
+    var lheight = 75;
+    var stack = options ? options.stack : false;
+    var curve = options ? options.curve : false;
+    var title = options ? options.title : null;
+    var noX = options ? options.nox : false;
+    if (noX) {
+        lheight = 0;
+    }
+    // Draw a border
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(25, 30, canvas.width - lwidth - 40, canvas.height - lheight - 40);
+    
+    // Draw a title if set:
+    if (title != null) {
+        ctx.font="15px Arial";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.fillText(title,(canvas.width-lwidth)/2, 15);
+    }
+    
+    // Draw legend
+    ctx.textAlign = "left";
+    var posY = 50;
+    for (var k in titles) {
+        var x = parseInt(k)
+        if (!noX) {
+            x = x + 1;
+        }
+        var title = titles[k];
+        ctx.fillStyle = colors[k % colors.length][0];
+        ctx.fillRect(canvas.width - lwidth + 20, posY-10, 10, 10);
+        
+        // Add legend text
+        ctx.font="12px Arial";
+        ctx.fillStyle = "#000";
+        ctx.fillText(title,canvas.width - lwidth + 40, posY);
+        
+        posY += 15;
+    }
+    
+    // Find max and min
+    var max = null;
+    var min = 0;
+    var stacked = null;
+    for (x in values) {
+        var s = 0;
+        for (y in values[x]) {
+            if (y > 0 || noX) {
+                s += values[x][y];
+                if (max == null || max < values[x][y]) {
+                    max = values[x][y];
+                }
+                if (min == null || min > values[x][y]) {
+                    min = values[x][y];
+                }
+            }
+        }
+        if (stacked == null || stacked < s) {
+            stacked = s;
+        }
+    }
+    if (stack) {
+        min = 0;
+        max = stacked;
+    }
+    
+    
+    // Set number of lines to draw and each step
+    var numLines = 5;
+    var step = (max-min) / (numLines+1);
+    
+    // Prettify the max value so steps aren't ugly numbers
+    if (step %1 != 0) {
+        step = (Math.round(step+0.5));
+        max = step * (numLines+1);
+    }
+    
+    // Draw horizontal lines
+    for (x = numLines; x >= 0; x--) {
+        
+        var y = 30 + (((canvas.height-40-lheight) / (numLines+1)) * (x+1));
+        ctx.moveTo(25, y);
+        ctx.lineTo(canvas.width - lwidth - 15, y);
+        ctx.lineWidth = 0.25;
+        ctx.stroke();
+        
+        // Add values
+        ctx.font="10px Arial";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "right";
+        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,canvas.width - lwidth, y-4);
+        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,20, y-4);
+    }
+    
+    
+    // Draw vertical lines
+    ctx.beginPath();
+    var numLines = values.length-1;
+    var step = (canvas.width - lwidth - 40) / values.length;
+    for (var x = 1; x < values.length; x++) {
+        var y = 25 + (step * x);
+        ctx.moveTo(y, 30);
+        ctx.lineTo(y, canvas.height - 10 - lheight);
+        ctx.lineWidth = 0.25;
+        ctx.stroke();
+    }
+    
+    // Draw X values if noX isn't set:
+    if (noX == false) {
+        for (var i = 0; i < values.length; i++) {
+            var x = 25 + (step * i) + step/2;
+            var y = canvas.height - lheight + 5;
+            ctx.translate(x, y);
+            ctx.moveTo(0,0);
+            ctx.lineTo(0,-15);
+            ctx.stroke();
+            ctx.rotate(-45*Math.PI/180);
+            ctx.textAlign = "right";
+            var val = values[i][0];
+            if (val.constructor.toString().match("Date()")) {
+                val = val.toDateString();
+            }
+            ctx.fillText(val.toString(), 0, 0);
+            ctx.rotate(45*Math.PI/180);
+            ctx.translate(-x,-y);
+        }
+        
+    }
+    
+    
+    
+    
+    // Draw each line
+    var stacks = [];
+    var pstacks = [];
+    var step = (canvas.width - lwidth - 40) / values.length;
+    var smallstep = (step / titles.length) - 4;
+    for (k in values) {
+        stacks[k] = 0;
+        pstacks[k] = canvas.height - 40 - lheight;
+        var beginX = 0;
+        for (i in values[k]) {
+            if (i > 0 || noX) {
+                var z = parseInt(i);
+                if (!noX) {
+                    z = parseInt(i) + 1;
+                }
+                var value = values[k][z];
+                var title = titles[i];
+                var color = colors[i % colors.length][1];
+                var fcolor = colors[i % colors.length][0];
+                
+                var x = (step * k) + ((smallstep+4) * i);
+                var y = canvas.height - 10 - lheight;
+                var height = ((canvas.height - 40 - lheight) / (max-min)) * value * -1;
+                var width = smallstep;
+                if (stack) {
+                    width = step - 10;
+                    y -= stacks[k];
+                    x = (step * k) + 5  ;
+                    stacks[k] -= height;
+                }
+                
+                        
+                // Draw bar
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = color;
+                ctx.strokeRect(20 + x, y, width, height);
+                
+                ctx.fillStyle = fcolor;
+                ctx.fillRect(20 + x, y, width, height);
+                
+            }
+        }
+        
 
     }
 }
