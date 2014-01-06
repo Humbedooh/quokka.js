@@ -27,6 +27,8 @@ Line charts:
 ############
 ![line chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example1.png "Example line chart")
 
+![line chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example4.png "Example line chart")
+
 To make a line chart, use:
    `quokkaLines(canvasName, [title1, title2, title3, ...], [ dataSet1, dataSet2, ... ], options)`
 

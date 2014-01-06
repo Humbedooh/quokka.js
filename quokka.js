@@ -187,7 +187,7 @@ function quokkaLines(id, titles, values, options) {
     
     // Find max and min
     var max = null;
-    var min = null;
+    var min = 0;
     var stacked = null;
     for (x in values) {
         var s = 0;
