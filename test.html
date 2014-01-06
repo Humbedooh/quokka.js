@@ -26,16 +26,16 @@ quokkaCircle("myCanvas", [
 quokkaLines("myCanvas2",
               ['Carrots', 'Apples', 'Oranges', 'Wheat', 'Coffee', 'Tea'],
               [
-                [10,10,10,10,7,5],
-                [12,10,10,10,7,5],
-                [8,12,20,5,10,5],
-                [10,10,10,10,7,14],
-                [12,10,10,10,7,5],
-                [8,12,20,5,10,5],
-                [10,10,10,10,7,5],
-                [12,10,10,10,7,5]
+                [new Date().toLocaleTimeString(), 10,10,10,10,7,5],
+                [new Date().toLocaleTimeString(), 12,10,10,10,7,5],
+                [new Date().toLocaleTimeString(), 8,12,20,5,10,5],
+                [new Date().toLocaleTimeString(), 10,10,10,10,7,14],
+                [new Date().toLocaleTimeString(), 12,10,10,10,7,5],
+                [new Date().toLocaleTimeString(), 8,12,20,5,10,5],
+                [new Date().toLocaleTimeString(), 10,10,10,10,7,5],
+                [new Date().toLocaleTimeString(), 12,10,10,10,7,5]
                ],
-              {stack: true, curve: true, title: "Yearly consumption of food"});
+              {stack: true, curve: true, title: "Yearly consumption of food", nox: false});
 
 </script>
 </body>

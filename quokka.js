@@ -139,18 +139,23 @@ function quokkaCircle(id, tags, opts) {
 
 /* Function for drawing line charts
  * Example usage:
- * quokkaLines("myCanvas", ['Line a', 'Line b', 'Line c'], [ [a1,b1,c1], [a2,b2,c2], [a3,b3,c3] ], { stacked: true, curve: false, title: "Some title" } );
+ * quokkaLines("myCanvas", ['Line a', 'Line b', 'Line c'], [ [x1,a1,b1,c1], [x2,a2,b2,c2], [x3,a3,b3,c3] ], { stacked: true, curve: false, title: "Some title" } );
  */
 function quokkaLines(id, titles, values, options) {
     var canvas = document.getElementById(id);
     var ctx=canvas.getContext("2d");
     var lwidth = 150;
+    var lheight = 75;
     var stack = options ? options.stack : false;
     var curve = options ? options.curve : false;
     var title = options ? options.title : null;
+    var noX = options ? options.nox : false;
+    if (noX) {
+        lheight = 0;
+    }
     // Draw a border
     ctx.lineWidth = 0.5;
-    ctx.strokeRect(10, 30, canvas.width - lwidth, canvas.height - 40);
+    ctx.strokeRect(10, 30, canvas.width - lwidth, canvas.height - lheight - 40);
     
     // Draw a title if set:
     if (title != null) {
@@ -163,7 +168,7 @@ function quokkaLines(id, titles, values, options) {
     // Draw legend
     ctx.textAlign = "left";
     var posY = 50;
-    for (k in titles) {
+    for (var k in titles) {
         var title = titles[k] + " (" + values[values.length-1][k] + ")";
         ctx.fillStyle = colors[k % colors.length][0];
         ctx.fillRect(canvas.width - lwidth + 20, posY-10, 10, 10);
@@ -183,12 +188,14 @@ function quokkaLines(id, titles, values, options) {
     for (x in values) {
         var s = 0;
         for (y in values[x]) {
-            s += values[x][y];
-            if (max == null || max < values[x][y]) {
-                max = values[x][y];
-            }
-            if (min == null || min > values[x][y]) {
-                min = values[x][y];
+            if (y > 0 || noX) {
+                s += values[x][y];
+                if (max == null || max < values[x][y]) {
+                    max = values[x][y];
+                }
+                if (min == null || min > values[x][y]) {
+                    min = values[x][y];
+                }
             }
         }
         if (stacked == null || stacked < s) {
@@ -214,7 +221,7 @@ function quokkaLines(id, titles, values, options) {
     // Draw horizontal lines
     for (x = 0; x <= numLines; x++) {
         
-        var y = 30 + (((canvas.height-40) / (numLines+1)) * (x+1));
+        var y = 30 + (((canvas.height-40-lheight) / (numLines+1)) * (x+1));
         ctx.moveTo(10, y);
         ctx.lineTo(canvas.width - lwidth + 10, y);
         ctx.lineWidth = 0.25;
@@ -232,48 +239,80 @@ function quokkaLines(id, titles, values, options) {
     // Draw vertical lines
     ctx.beginPath();
     var numLines = values.length-1;
-    for (x = 0; x < numLines; x++) {
-        var y = 10 + (((canvas.width-lwidth - 10) / (numLines+1)) * (x+1));
+    var step = (canvas.width-lwidth - 10) / values.length;
+    for (var x = 0; x < values.length; x++) {
+        var y = 10 + (step * x);
         ctx.moveTo(y, 30);
-        ctx.lineTo(y, canvas.height - 10);
+        ctx.lineTo(y, canvas.height - 10 - lheight);
         ctx.lineWidth = 0.25;
         ctx.stroke();
     }
     
+    // Draw X values if noX isn't set:
+    if (noX == false) {
+        for (var i = 0; i < values.length; i++) {
+            var x = 10 + (step * i) + step/2;
+            var y = canvas.height - lheight + 5;
+            ctx.translate(x, y);
+            ctx.moveTo(0,0);
+            ctx.lineTo(0,-15);
+            ctx.stroke();
+            ctx.rotate(-45*Math.PI/180);
+            ctx.textAlign = "right";
+            var val = values[i][0];
+            if (val.constructor.toString().match("Date()")) {
+                val = val.toDateString();
+            }
+            ctx.fillText(val.toString(), 0, 0);
+            ctx.rotate(45*Math.PI/180);
+            ctx.translate(-x,-y);
+        }
+        
+    }
+    
+    
     
     
     // Draw each line
-    stacks = [];
-    pstacks = []
-    for (k in values) { stacks[k] = 0; pstacks[k] = canvas.height - 40; }
+    var stacks = [];
+    var pstacks = [];
+    for (k in values) { stacks[k] = 0; pstacks[k] = canvas.height - 40 - lheight; }
     for (k in titles) {
         
         ctx.beginPath();
         var color = colors[k % colors.length][0];
-        var value = values[0][k];
+        var f = parseInt(k) + 1;
+        if (noX) {
+            f = parseInt(k);
+        }
+        var value = values[0][f];
         var step = ( canvas.width - lwidth) / (numLines+1);
         var x = 10 + (step/2);
-        var y = (canvas.height - 10) - (((value-min) / (max-min)) * (canvas.height - 40));
+        var y = (canvas.height - 10 - lheight) - (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
         var py = y;
         if (stack) {
             y -= stacks[0];
             pstacks[0] = stacks[0];
-            stacks[0] += (((value-min) / (max-min)) * (canvas.height - 40));
+            stacks[0] += (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
         }
         
         // Draw line
         ctx.moveTo(x, y);
         var pvalY = y;
         var pvalX = x;
-        for (i in values) {
+        for (var i in values) {
             if (i > 0) {
                 x = 10 + (step/2) + (step*i);
-                value = values[i][k];
-                y = (canvas.height - 10) - (((value-min) / (max-min)) * (canvas.height - 40));
+                var f = parseInt(k) + 1;
+                if (noX == true) {
+                    f = parseInt(k);
+                }
+                value = values[i][f];
+                y = (canvas.height - 10 - lheight) - (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
                 if (stack) {
                     y -= stacks[i];
                     pstacks[i] = stacks[i];
-                    stacks[i] += (((value-min) / (max-min)) * (canvas.height - 40));
+                    stacks[i] += (((value-min) / (max-min)) * (canvas.height - 40- lheight));
                 }
                 // Draw curved lines??
                 /* We'll do: (x1,y1)-----(x1.5,y1)
@@ -302,12 +341,16 @@ function quokkaLines(id, titles, values, options) {
         // Draw stack area
         if (stack) {
             ctx.globalAlpha = 0.65;
-            var lastPoint = canvas.height - 40;
+            var lastPoint = canvas.height - 40 - lheight;
             for (i in values) {
                 if (i > 0) {
+                    var f = parseInt(k) + 1;
+                    if (noX == true) {
+                        f = parseInt(k);
+                    }
                     x = 10 + (step/2) + (step*i);
-                    value = values[i][k];
-                    y = (canvas.height - 10) - (((value-min) / (max-min)) * (canvas.height - 40));
+                    value = values[i][f];
+                    y = (canvas.height - 10 - lheight) - (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
                     y -= stacks[i];
                     lastPoint = pstacks[i];
                 }
@@ -315,9 +358,9 @@ function quokkaLines(id, titles, values, options) {
             var pvalY = y;
             var pvalX = x;
             for (i in values) {
-                l = values.length - i - 1;
+                var l = values.length - i - 1;
                 x = 10 + (step/2) + (step*l);
-                y = canvas.height - 10 - pstacks[l];
+                y = canvas.height - 10 - lheight - pstacks[l];
                 
                 if (curve) {
                     ctx.bezierCurveTo((pvalX + x) / 2, pvalY, (pvalX + x) / 2, y, x, y);

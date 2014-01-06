@@ -29,16 +29,17 @@ To make a line chart, use:
   * title: Optional title of the chart
   * stack: Whether to stack lines and color in the area between them
   * curve: Whether or not to use curved lines
+  * nox: (no x) Whether to include X axis tags or not.
 
 For example:
 
     quokkaLines("myCanvas", 
         ['Line a', 'Line b', 'Line c'], 
         [ 
-            [a1,b1,c1], 
-            [a2,b2,c2], 
-            [a3,b3,c3] 
+            [new Date(), a1, b1, c1], 
+            [new Date(), a2, b2, c2], 
+            [new Date(), a3, b3, c3] 
         ],
-        { stacked: true, curve: false, title: "Some title" }
+        { stacked: true, curve: false, title: "Some title", nox: false }
       );
 
