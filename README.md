@@ -51,7 +51,7 @@ For example:
             [new Date(), a2, b2, c2], 
             [new Date(), a3, b3, c3] 
         ],
-        { stacked: true, curve: false, title: "Some title", nox: false }
+        { stack: true, curve: false, title: "Some title", nox: false }
       );
 
 
@@ -82,6 +82,6 @@ For example:
             [new Date(), a2, b2, c2], 
             [new Date(), a3, b3, c3] 
         ],
-        { stacked: true, title: "Some title", nox: false }
+        { stack: true, title: "Some title", nox: false }
       );
 
