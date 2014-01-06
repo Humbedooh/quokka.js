@@ -549,22 +549,27 @@ function quokkaBars(id, titles, values, options) {
         for (i in values[k]) {
             if (i > 0 || noX) {
                 var z = parseInt(i);
+                var zz = z;
                 if (!noX) {
                     z = parseInt(i) + 1;
+                    zz = z - 2;
+                    if (z > values[k].length) {
+                        break;
+                    }
                 }
-                var value = values[k][z];
+                var value = values[k][i];
                 var title = titles[i];
-                var color = colors[i % colors.length][1];
-                var fcolor = colors[i % colors.length][0];
+                var color = colors[zz % colors.length][1];
+                var fcolor = colors[zz % colors.length][0];
                 
-                var x = (step * k) + ((smallstep+4) * i);
+                var x = ((step) * k) + ((smallstep+2) * zz) + 5;
                 var y = canvas.height - 10 - lheight;
                 var height = ((canvas.height - 40 - lheight) / (max-min)) * value * -1;
-                var width = smallstep;
+                var width = smallstep - 2;
                 if (stack) {
                     width = step - 10;
                     y -= stacks[k];
-                    x = (step * k) + 10  ;
+                    x = (step * k) + 4;
                     stacks[k] -= height;
                 }
                 
@@ -573,10 +578,10 @@ function quokkaBars(id, titles, values, options) {
                 ctx.beginPath();
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = color;
-                ctx.strokeRect(20 + x, y, width, height);
+                ctx.strokeRect(27 + x, y, width, height);
                 
                 ctx.fillStyle = fcolor;
-                ctx.fillRect(20 + x, y, width, height);
+                ctx.fillRect(27 + x, y, width, height);
                 
             }
         }
