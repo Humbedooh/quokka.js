@@ -7,6 +7,7 @@ Quokka - A simple canvas chart maker in JavaScript.
 
 Pie charts:
 ###########
+![pie chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example2.png "Example pie chart")
 
 To make a pie chart, use:
    `quikkaCircle(canvasName, [ value1, value2, ... ])`
@@ -24,6 +25,7 @@ For example:
     
 Line charts:
 ############
+![line chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example1.png "Example line chart")
 
 To make a line chart, use:
    `quikkaLines(canvasName, [title1, title2, title3, ...], [ dataSet1, dataSet2, ... ], options)`
