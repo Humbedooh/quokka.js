@@ -40,6 +40,7 @@ To make a line chart, use:
   * stack: Whether to stack lines and color in the area between them
   * curve: Whether or not to use curved lines
   * nox: (no x) Whether to include X axis tags or not.
+  * points: Whether or not to mark the (x,y) points on the lines.
 
 For example:
 

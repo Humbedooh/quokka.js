@@ -146,23 +146,25 @@ function quokkaLines(id, titles, values, options) {
     var ctx=canvas.getContext("2d");
     var lwidth = 150;
     var lheight = 75;
+    var rectwidth = canvas.width - lwidth - 40;
     var stack = options ? options.stack : false;
     var curve = options ? options.curve : false;
     var title = options ? options.title : null;
+    var spots = options ? options.points : false;
     var noX = options ? options.nox : false;
     if (noX) {
         lheight = 0;
     }
     // Draw a border
     ctx.lineWidth = 0.5;
-    ctx.strokeRect(10, 30, canvas.width - lwidth, canvas.height - lheight - 40);
+    ctx.strokeRect(35, 30, rectwidth, canvas.height - lheight - 40);
     
     // Draw a title if set:
     if (title != null) {
         ctx.font="15px Arial";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
-        ctx.fillText(title,(canvas.width-lwidth)/2, 15);
+        ctx.fillText(title,rectwidth/2, 15);
     }
     
     // Draw legend
@@ -175,7 +177,7 @@ function quokkaLines(id, titles, values, options) {
         }
         var title = titles[k] + " (" + values[values.length-1][x] + ")";
         ctx.fillStyle = colors[k % colors.length][0];
-        ctx.fillRect(canvas.width - lwidth + 20, posY-10, 10, 10);
+        ctx.fillRect(40 + rectwidth + 20, posY-10, 10, 10);
         
         // Add legend text
         ctx.font="12px Arial";
@@ -226,8 +228,8 @@ function quokkaLines(id, titles, values, options) {
     for (x = 0; x <= numLines; x++) {
         
         var y = 30 + (((canvas.height-40-lheight) / (numLines+1)) * (x+1));
-        ctx.moveTo(10, y);
-        ctx.lineTo(canvas.width - lwidth + 10, y);
+        ctx.moveTo(35, y);
+        ctx.lineTo(35 + rectwidth, y);
         ctx.lineWidth = 0.25;
         ctx.stroke();
         
@@ -235,17 +237,17 @@ function quokkaLines(id, titles, values, options) {
         ctx.font="10px Arial";
         ctx.fillStyle = "#000";
         ctx.textAlign = "right";
-        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,canvas.width - lwidth, y-4);
-        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,35, y-4);
+        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,canvas.width - lwidth + 10, y-4);
+        ctx.fillText( Math.round( ((max-min) - (step*(x+1))) * 100 ) / 100,30, y-4);
     }
     
     
     // Draw vertical lines
     ctx.beginPath();
     var numLines = values.length-1;
-    var step = (canvas.width-lwidth - 10) / values.length;
-    for (var x = 0; x < values.length; x++) {
-        var y = 10 + (step * x);
+    var step = rectwidth / numLines;
+    for (var x = 1; x < values.length; x++) {
+        var y = 35 + (step * x);
         ctx.moveTo(y, 30);
         ctx.lineTo(y, canvas.height - 10 - lheight);
         ctx.lineWidth = 0.25;
@@ -255,7 +257,7 @@ function quokkaLines(id, titles, values, options) {
     // Draw X values if noX isn't set:
     if (noX == false) {
         for (var i = 0; i < values.length; i++) {
-            var x = 10 + (step * i) + step/2;
+            var x = 35 + (step * i);
             var y = canvas.height - lheight + 5;
             ctx.translate(x, y);
             ctx.moveTo(0,0);
@@ -290,8 +292,8 @@ function quokkaLines(id, titles, values, options) {
             f = parseInt(k);
         }
         var value = values[0][f];
-        var step = ( canvas.width - lwidth) / (numLines+1);
-        var x = 10 + (step/2);
+        var step = rectwidth / numLines;
+        var x = 35;
         var y = (canvas.height - 10 - lheight) - (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
         var py = y;
         if (stack) {
@@ -306,7 +308,7 @@ function quokkaLines(id, titles, values, options) {
         var pvalX = x;
         for (var i in values) {
             if (i > 0) {
-                x = 10 + (step/2) + (step*i);
+                x = 35 + (step*i);
                 var f = parseInt(k) + 1;
                 if (noX == true) {
                     f = parseInt(k);
@@ -333,6 +335,14 @@ function quokkaLines(id, titles, values, options) {
                 else {
                     ctx.lineTo(x, y);
                 }
+                if (spots) {
+                    ctx.fillStyle = color;
+                    ctx.translate(x-2, y-2);
+                    ctx.rotate(-45*Math.PI/180);
+                    ctx.fillRect(-2,1,4,4);
+                    ctx.rotate(45*Math.PI/180);
+                    ctx.translate(-x+2, -y+2);
+                }
             }
         }
         
@@ -352,7 +362,7 @@ function quokkaLines(id, titles, values, options) {
                     if (noX == true) {
                         f = parseInt(k);
                     }
-                    x = 10 + (step/2) + (step*i);
+                    x = 35 + (step*i);
                     value = values[i][f];
                     y = (canvas.height - 10 - lheight) - (((value-min) / (max-min)) * (canvas.height - 40 - lheight));
                     y -= stacks[i];
@@ -363,7 +373,7 @@ function quokkaLines(id, titles, values, options) {
             var pvalX = x;
             for (i in values) {
                 var l = values.length - i - 1;
-                x = 10 + (step/2) + (step*l);
+                x = 35 + (step*l);
                 y = canvas.height - 10 - lheight - pstacks[l];
                 
                 if (curve) {
@@ -375,7 +385,7 @@ function quokkaLines(id, titles, values, options) {
                     ctx.lineTo(x, y);
                 }
             }
-            ctx.lineTo(10 + (step/2), py - pstacks[0]);
+            ctx.lineTo(35, py - pstacks[0]);
             ctx.lineWidth = 0;
             ctx.strokeStyle = colors[k % colors.length][0];
             ctx.fillStyle = colors[k % colors.length][0];
