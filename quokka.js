@@ -554,7 +554,7 @@ function quokkaBars(id, titles, values, options) {
                 if (stack) {
                     width = step - 10;
                     y -= stacks[k];
-                    x = (step * k) + 5  ;
+                    x = (step * k) + 10  ;
                     stacks[k] -= height;
                 }
                 
