@@ -5,8 +5,8 @@ Quokka - A simple canvas chart maker in JavaScript.
 
 
 
-Pie charts:
-###########
+### Pie charts: ###
+
 ![pie chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example2.png "Example pie chart")
 
 To make a pie chart, use:
@@ -23,8 +23,8 @@ For example:
          ]
       );
     
-Line charts:
-############
+### Line charts: ###
+
 ![line chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example1.png "Example line chart")
 
 ![line chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example4.png "Example line chart")
@@ -55,8 +55,8 @@ For example:
 
 
 
-Bar charts:
-############
+### Bar charts: ###
+
 ![bar chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example3.png "Example bar chart")
 
 To make a bar chart, use the same structure as with line charts:
