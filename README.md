@@ -59,6 +59,8 @@ For example:
 
 ![bar chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example3.png "Example bar chart")
 
+![bar chart](https://github.com/Humbedooh/quokka.js/raw/master/quokka_example5.png "Example stacked bar chart")
+
 To make a bar chart, use the same structure as with line charts:
    `quokkaBars(canvasName, [title1, title2, title3, ...], [ dataSet1, dataSet2, ... ], options)`
 
